@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:spacex_app/data/provider/home_provider.dart';
 
@@ -26,11 +27,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   getData() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Provider.of<HomeProvider>(context, listen: false).getCompany();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      Provider.of<HomeProvider>(context, listen: false).getCompany(context);
+      Provider.of<HomeProvider>(context, listen: false).getRocket(context);
+      Get.offAll(() => HomeScreen());
     });
   }
 
