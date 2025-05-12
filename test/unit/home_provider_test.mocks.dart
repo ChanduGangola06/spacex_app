@@ -41,32 +41,20 @@ class MockAppCacheProvider extends _i1.Mock implements _i2.AppCacheProvider {
       ) as _i3.Future<void>);
 
   @override
+  _i3.Future<String?> getLastUpdate() => (super.noSuchMethod(
+        Invocation.method(
+          #getLastUpdate,
+          [],
+        ),
+        returnValue: _i3.Future<String?>.value(),
+      ) as _i3.Future<String?>);
+
+  @override
   _i3.Future<void> cacheLaunches(List<dynamic>? launches) =>
       (super.noSuchMethod(
         Invocation.method(
           #cacheLaunches,
           [launches],
-        ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> cacheRockets(List<dynamic>? rockets) => (super.noSuchMethod(
-        Invocation.method(
-          #cacheRockets,
-          [rockets],
-        ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
-
-  @override
-  _i3.Future<void> cacheCompany(Map<String, dynamic>? company) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #cacheCompany,
-          [company],
         ),
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
@@ -82,6 +70,16 @@ class MockAppCacheProvider extends _i1.Mock implements _i2.AppCacheProvider {
       ) as _i3.Future<List<dynamic>?>);
 
   @override
+  _i3.Future<void> cacheRockets(List<dynamic>? rockets) => (super.noSuchMethod(
+        Invocation.method(
+          #cacheRockets,
+          [rockets],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
   _i3.Future<List<dynamic>?> getCachedRockets() => (super.noSuchMethod(
         Invocation.method(
           #getCachedRockets,
@@ -91,6 +89,17 @@ class MockAppCacheProvider extends _i1.Mock implements _i2.AppCacheProvider {
       ) as _i3.Future<List<dynamic>?>);
 
   @override
+  _i3.Future<void> cacheCompany(Map<String, dynamic>? company) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #cacheCompany,
+          [company],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
+
+  @override
   _i3.Future<Map<String, dynamic>?> getCachedCompany() => (super.noSuchMethod(
         Invocation.method(
           #getCachedCompany,
@@ -98,15 +107,6 @@ class MockAppCacheProvider extends _i1.Mock implements _i2.AppCacheProvider {
         ),
         returnValue: _i3.Future<Map<String, dynamic>?>.value(),
       ) as _i3.Future<Map<String, dynamic>?>);
-
-  @override
-  _i3.Future<DateTime?> getLastUpdate() => (super.noSuchMethod(
-        Invocation.method(
-          #getLastUpdate,
-          [],
-        ),
-        returnValue: _i3.Future<DateTime?>.value(),
-      ) as _i3.Future<DateTime?>);
 
   @override
   _i3.Future<bool> shouldRefreshData() => (super.noSuchMethod(

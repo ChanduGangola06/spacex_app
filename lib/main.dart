@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             builder: (context, child) {
               return GetMaterialApp(
                 title: 'SpaceX App',
-                theme: AppTheme.lightTheme,
+                theme: AppTheme.darkTheme,
                 darkTheme: AppTheme.darkTheme,
                 themeMode: themeProvider.themeMode,
                 home: const HomeScreen(),
