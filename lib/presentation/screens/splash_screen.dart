@@ -29,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Provider.of<HomeProvider>(context, listen: false).getCompany(context);
       Provider.of<HomeProvider>(context, listen: false).getRocket(context);
+      
       Get.offAll(() => HomeScreen());
     });
   }

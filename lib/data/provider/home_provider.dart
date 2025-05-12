@@ -3,10 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:spacex_app/data/services/graphql_service.dart';
+import 'package:spacex_app/data/provider/cache_provider.dart';
 
 import '../../core/utils/custom_snackbar.dart';
 
 class HomeProvider extends ChangeNotifier {
+  final AppCacheProvider _cacheProvider = AppCacheProvider();
+
   bool _isCompanyLoading = false;
   bool get isCompanyLoadingg => _isCompanyLoading;
 
@@ -25,10 +28,51 @@ class HomeProvider extends ChangeNotifier {
   List _getRocketData = [];
   List get getRocketData => _getRocketData;
 
+  HomeProvider() {
+    _initCache();
+  }
+
+  Future<void> _initCache() async {
+    await _cacheProvider.init();
+    await _loadCachedData();
+  }
+
+  Future<void> _loadCachedData() async {
+    final cachedLaunches = await _cacheProvider.getCachedLaunches();
+    if (cachedLaunches != null) {
+      _getLaunchesData = cachedLaunches;
+      notifyListeners();
+    }
+
+    final cachedRockets = await _cacheProvider.getCachedRockets();
+    if (cachedRockets != null) {
+      _getRocketData = cachedRockets;
+      notifyListeners();
+    }
+
+    final cachedCompany = await _cacheProvider.getCachedCompany();
+    if (cachedCompany != null) {
+      _getCompanyData = cachedCompany;
+      notifyListeners();
+    }
+  }
+
   void getCompany(context) async {
     try {
       _isCompanyLoading = true;
       notifyListeners();
+
+      // Check if we should use cached data
+      if (!await _cacheProvider.shouldRefreshData()) {
+        final cachedData = await _cacheProvider.getCachedCompany();
+        if (cachedData != null) {
+          _getCompanyData = cachedData;
+          _isCompanyLoading = false;
+          notifyListeners();
+          return;
+        }
+      }
+
       GraphQLClient client = GraphqlService.myGQLClient();
       QueryResult result = await client.query(
         QueryOptions(
@@ -67,6 +111,8 @@ class HomeProvider extends ChangeNotifier {
 
       if (result.data!.isNotEmpty) {
         _getCompanyData = result.data!['company'];
+        await _cacheProvider
+            .cacheCompany(Map<String, dynamic>.from(_getCompanyData));
         _isCompanyLoading = false;
         notifyListeners();
       }
@@ -82,6 +128,18 @@ class HomeProvider extends ChangeNotifier {
     try {
       _isRocketLoading = true;
       notifyListeners();
+
+      // Check if we should use cached data
+      if (!await _cacheProvider.shouldRefreshData()) {
+        final cachedData = await _cacheProvider.getCachedRockets();
+        if (cachedData != null) {
+          _getRocketData = cachedData;
+          _isRocketLoading = false;
+          notifyListeners();
+          return;
+        }
+      }
+
       GraphQLClient client = GraphqlService.myGQLClient();
       QueryResult result = await client.query(
         QueryOptions(
@@ -134,6 +192,7 @@ class HomeProvider extends ChangeNotifier {
       );
       if (result.data!.isNotEmpty) {
         _getRocketData = result.data!['rockets'];
+        await _cacheProvider.cacheRockets(_getRocketData);
         _isRocketLoading = false;
         notifyListeners();
       }
@@ -150,6 +209,18 @@ class HomeProvider extends ChangeNotifier {
     try {
       _isLaunchesLoading = true;
       notifyListeners();
+
+      // Check if we should use cached data
+      if (!await _cacheProvider.shouldRefreshData()) {
+        final cachedData = await _cacheProvider.getCachedLaunches();
+        if (cachedData != null) {
+          _getLaunchesData = cachedData;
+          _isLaunchesLoading = false;
+          notifyListeners();
+          return;
+        }
+      }
+
       GraphQLClient client = GraphqlService.myGQLClient();
       QueryResult result = await client.query(
         QueryOptions(
@@ -160,10 +231,16 @@ class HomeProvider extends ChangeNotifier {
                 details
                 launch_year
                 launch_success
+                launch_site {
+                  site_name
+                  site_name_long
+                }
                 links {
                   video_link
+                  wikipedia
+                  flickr_images
                 }
-                launch_date_local
+                launch_date_utc
                 rocket {
                   rocket {
                     id
@@ -183,6 +260,7 @@ class HomeProvider extends ChangeNotifier {
 
       if (result.data!.isNotEmpty) {
         _getLaunchesData = result.data!['launches'];
+        await _cacheProvider.cacheLaunches(_getLaunchesData);
         _isLaunchesLoading = false;
         notifyListeners();
       }
@@ -192,5 +270,9 @@ class HomeProvider extends ChangeNotifier {
       _isLaunchesLoading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> loadCacheForTest() async {
+    await _initCache();
   }
 }
